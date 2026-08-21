@@ -13,7 +13,7 @@ class Adadelta:
       #Calculate moving average of squared gradients
       self.pastGradient = (
         self.rho*self.pastGradient 
-        +(1-self.rho)*(np.square(gradient))
+        +(1 - self.rho)*(np.square(gradient))
       )
 
       #Scale by using past RMS and update
@@ -27,5 +27,5 @@ class Adadelta:
       #Save update for moving average
       self.pastUpdate = (
         self.rho*self.pastUpdate
-        +(1-self.rho)*np.square(update)
+        +(1 - self.rho)*np.square(update)
       )
