@@ -4,20 +4,28 @@ import numpy as np
 seed = 10
 rng = np.random.default_rng(seed=seed)
 
+
+def setSeed(newSeed):
+    global seed, rng
+    seed = newSeed
+    rng = np.random.default_rng(seed=seed)
+
+
 class Dropout:
     def __init__(self, dropOutRate):
         self.dropOutRate = dropOutRate
 
     def forward(self, x):
         self.mask = rng.choice(
-            [0, 1], size=x.shape, 
+            [0, 1], size=x.shape,
             p=[self.dropOutRate, 1 - self.dropOutRate]
         )
-        return  x * self.mask / (1 - self.dropOutRate)
+        return x * self.mask / (1 - self.dropOutRate)
 
     def backward(self, gradient):
         # Scale gradients for surviving activations
-        return gradient * (self.mask/(1 - self.dropOutRate))
+        return gradient * (self.mask / (1 - self.dropOutRate))
+
 
 class Linear:
     def __init__(self, inputSize, outputSize):
@@ -36,6 +44,7 @@ class Linear:
         self.db = np.mean(gradient, axis=1, keepdims=True)
         return self.W.T @ gradient
 
+
 class ReLU:
     def forward(self, x):
         self.x = x
@@ -43,11 +52,12 @@ class ReLU:
 
     def backward(self, gradient):
         return gradient * (self.x > 0)
-    
+
+
 class Softmax:
+    @staticmethod
     def forward(x):
-        # Shifts logits before exponentiation
+        # Shift logits before exponentiation for numerical stability
         x = x - np.max(x, axis=0, keepdims=True)
         expX = np.exp(x)
         return expX / np.sum(expX, axis=0, keepdims=True)
-    
