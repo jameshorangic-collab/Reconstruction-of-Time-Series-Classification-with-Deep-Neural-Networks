@@ -1,15 +1,17 @@
-from Layers import Linear, ReLU, Dropout, Softmax
+from Layers import Linear, ReLU, Softmax, setSeed
 from Adadelta import Adadelta
 import numpy as np
 import random
 
 seed = 10
 random.seed(seed)
+setSeed(seed)
 
 # File selection
 trainFile = "Adiac_TRAIN.txt"
 numberOfClasses = 37
 inputLength = 176
+weightsFile = "mlp_weights_no_dropout.npz"
 
 # Optimizer
 rho = 0.95
@@ -36,7 +38,8 @@ optB4 = Adadelta(learningRate, rho, epsilon)
 # Training configuration and tracking
 lossTotal = 0
 sample = 0
-minLoss = np.inf
+bestCheckpointLoss = np.inf
+schedulerBestLoss = np.inf
 epochs = 5000
 batchSize = 16
 
@@ -112,12 +115,11 @@ for i in range(1, epochs + 1):
         z4 = layer4.forward(a3)
 
         prediction = Softmax.forward(z4)
-
         gradient = prediction - targetBatch
 
         lossTotal += -np.sum(targetBatch * np.log(prediction + epsilon))
         sample += targetBatch.shape[1]
-        
+
         # Backward pass
         gradient = layer4.backward(gradient)
 
@@ -147,27 +149,29 @@ for i in range(1, epochs + 1):
     loss = lossTotal / max(sample, 1)
     print("Epoch:", i, "Loss:", loss, "LR:", learningRate, "Since improvement:", sinceImprovement)
 
-    # Save weights when training loss reaches a new minimum
-    if loss < minLoss - thresholdImprovement:
-        minLoss = loss
+    # ModelCheckpoint behavior: save on any new minimum training loss
+    if loss < bestCheckpointLoss:
+        bestCheckpointLoss = loss
 
         np.savez(
-        "mlp_weights.npz",
-        layer1_W=layer1.W,
-        layer1_b=layer1.b,
-        layer2_W=layer2.W,
-        layer2_b=layer2.b,
-        layer3_W=layer3.W,
-        layer3_b=layer3.b,
-        layer4_W=layer4.W,
-        layer4_b=layer4.b
+            weightsFile,
+            layer1_W=layer1.W,
+            layer1_b=layer1.b,
+            layer2_W=layer2.W,
+            layer2_b=layer2.b,
+            layer3_W=layer3.W,
+            layer3_b=layer3.b,
+            layer4_W=layer4.W,
+            layer4_b=layer4.b
         )
 
+    # ReduceLROnPlateau behavior: require a minimum improvement of 1e-4
+    if loss < schedulerBestLoss - thresholdImprovement:
+        schedulerBestLoss = loss
         sinceImprovement = 0
     else:
         sinceImprovement += 1
 
-        # Reduce learning rate after sustained lack of improvement
         if sinceImprovement >= patience and learningRatesIndex < (len(learningRates) - 1):
             learningRatesIndex += 1
             learningRate = learningRates[learningRatesIndex]
@@ -176,7 +180,7 @@ for i in range(1, epochs + 1):
             optW2.learningRate = learningRate
             optW3.learningRate = learningRate
             optW4.learningRate = learningRate
-        
+
             optB1.learningRate = learningRate
             optB2.learningRate = learningRate
             optB3.learningRate = learningRate

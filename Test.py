@@ -6,6 +6,7 @@ testFile = "Adiac_TEST.txt"
 trainFile = "Adiac_TRAIN.txt"
 numberOfClasses = 37
 inputLength = 176
+weightsFile = "mlp_weights_dropout.npz"
 
 # Normalize test data using statistics calculated only from the training set
 trainInputs = []
@@ -55,7 +56,7 @@ relu3 = ReLU()
 layer4 = Linear(500, numberOfClasses)
 
 # Load trained parameters
-weights = np.load("mlp_weights.npz")
+weights = np.load(weightsFile)
 
 layer1.W = weights["layer1_W"]
 layer1.b = weights["layer1_b"]
@@ -72,6 +73,7 @@ layer4.b = weights["layer4_b"]
 # Compare predicted and true class indices
 def accuracy(prediction, target):
     return int(np.argmax(prediction) == np.argmax(target))
+
 
 correct = 0
 total = 0
@@ -106,4 +108,5 @@ with open(normalizedTestFile, "r", encoding="utf-8") as file:
 
 accuracyPercent = correct / total * 100
 
+print("Weights:", weightsFile)
 print("Accuracy:", str(np.round(accuracyPercent, 3)) + "%")
