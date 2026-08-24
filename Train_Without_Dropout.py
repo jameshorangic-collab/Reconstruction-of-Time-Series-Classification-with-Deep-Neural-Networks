@@ -7,39 +7,27 @@ seed = 10
 random.seed(seed)
 setSeed(seed)
 
-# File selection
+# File selection (Adiac is used as example)
 trainFile = "Adiac_TRAIN.txt"
 numberOfClasses = 37
 inputLength = 176
 weightsFile = "mlp_weights_no_dropout.npz"
 
-# Optimizer
-rho = 0.95
-epsilon = 1e-8
+# Tracking progression
+lossTotal = 0
+sample = 0
+bestCheckpointLoss = np.inf
+schedulerBestLoss = np.inf
 
+# Learning rate reduction parameters
 learningRates = [1.0, 0.5, 0.25, 0.125, 0.1]
 learningRatesIndex = 0
-learningRate = learningRates[learningRatesIndex]
 
 sinceImprovement = 0
 patience = 200
 thresholdImprovement = 1e-4
 
-optW1 = Adadelta(learningRate, rho, epsilon)
-optW2 = Adadelta(learningRate, rho, epsilon)
-optW3 = Adadelta(learningRate, rho, epsilon)
-optW4 = Adadelta(learningRate, rho, epsilon)
-
-optB1 = Adadelta(learningRate, rho, epsilon)
-optB2 = Adadelta(learningRate, rho, epsilon)
-optB3 = Adadelta(learningRate, rho, epsilon)
-optB4 = Adadelta(learningRate, rho, epsilon)
-
-# Training configuration and tracking
-lossTotal = 0
-sample = 0
-bestCheckpointLoss = np.inf
-schedulerBestLoss = np.inf
+# Training configuration
 epochs = 5000
 batchSize = 16
 
@@ -74,6 +62,21 @@ relu2 = ReLU()
 layer3 = Linear(500, 500)
 relu3 = ReLU()
 layer4 = Linear(500, numberOfClasses)
+
+# Optimizer
+rho = 0.95
+epsilon = 1e-8
+learningRate = learningRates[learningRatesIndex]
+
+optW1 = Adadelta(learningRate, rho, epsilon)
+optW2 = Adadelta(learningRate, rho, epsilon)
+optW3 = Adadelta(learningRate, rho, epsilon)
+optW4 = Adadelta(learningRate, rho, epsilon)
+
+optB1 = Adadelta(learningRate, rho, epsilon)
+optB2 = Adadelta(learningRate, rho, epsilon)
+optB3 = Adadelta(learningRate, rho, epsilon)
+optB4 = Adadelta(learningRate, rho, epsilon)
 
 # Training
 for i in range(1, epochs + 1):
