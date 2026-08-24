@@ -105,4 +105,4 @@ with open(normalizedTestFile, "r", encoding="utf-8") as file:
         correct += accuracy(prediction, target)
         total += 1
 
-accuracyPercent = float(correct) / total
+accuracyFinal = float(correct) / total
