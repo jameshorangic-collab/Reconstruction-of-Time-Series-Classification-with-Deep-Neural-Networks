@@ -1,12 +1,15 @@
 from Layers import Linear, ReLU, Softmax
 import numpy as np
 
-# File selection
+# File selection (Adiac is used as example)
 testFile = "Adiac_TEST.txt"
 trainFile = "Adiac_TRAIN.txt"
 numberOfClasses = 37
 inputLength = 176
 weightsFile = "mlp_weights_dropout.npz"
+
+correct = 0
+total = 0
 
 # Normalize test data using statistics calculated only from the training set
 trainInputs = []
@@ -74,10 +77,6 @@ layer4.b = weights["layer4_b"]
 def accuracy(prediction, target):
     return int(np.argmax(prediction) == np.argmax(target))
 
-
-correct = 0
-total = 0
-
 # Evaluate network on normalized test set
 with open(normalizedTestFile, "r", encoding="utf-8") as file:
     for line in file:
@@ -106,7 +105,4 @@ with open(normalizedTestFile, "r", encoding="utf-8") as file:
         correct += accuracy(prediction, target)
         total += 1
 
-accuracyPercent = correct / total * 100
-
-print("Weights:", weightsFile)
-print("Accuracy:", str(np.round(accuracyPercent, 3)) + "%")
+accuracyPercent = float(correct) / total
