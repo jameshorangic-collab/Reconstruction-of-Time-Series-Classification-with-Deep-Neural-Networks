@@ -9,7 +9,7 @@ The purpose of this project was to develop a deeper understanding of how neural 
 
 The paper itself argues for the use of deep neural networks for time-series classification, with particular emphasis on convolutional neural networks (CNNs), such as the fully convolutional network (FCN). Its importance comes from showcasing that simple end-to-end neural networks could achieve strong performance on the time-series benchmarks of the time without requiring extensive engineering or specialized model design. In particular, the FCN and related architectures demonstrated that convolutional networks could learn useful representations directly from raw time-series data. The work helped establish deep learning as a serious approach to time-series classification and influenced much of the research that followed.
 
-The choice to reconstruct the MLP network instead of the FCN was due to the more complex nature of the MLP, and its applicability to modern machine learning concepts today. My reconstruction  used the numpy library to impliment all required functions, the optimizer, and data-preproccessing as specifiecd by the original paper. For further information on the exact rebuilding see 
+The choice to reconstruct the MLP rather than the FCN was motivated by its foundational role in neural networks and its direct connection to many concepts still used throughout modern machine learning. My reconstruction used the NumPy library to implement the required network operations, optimizer, and data preprocessing described by the original implementation. For further details on the my reconstruction methodology, see [`Results/Notes.md`](./Results/Notes.md).
 
 How to use my reconsutroin
 
