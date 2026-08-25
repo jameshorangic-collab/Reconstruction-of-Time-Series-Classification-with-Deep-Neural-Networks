@@ -11,7 +11,18 @@ The paper itself argues for the use of deep neural networks for time-series clas
 
 The choice to reconstruct the MLP rather than the FCN was motivated by its foundational role in neural networks and its direct connection to many concepts still used throughout modern machine learning. My reconstruction used the NumPy library to implement the operations, optimizer, and data preprocessing prescribed by the original implementation. For further details on the reconstruction methodology, see [`Results/Notes.md`](./Results/Notes.md).
 
-How to use my reconsutroin
+## How to Run the Reconstruction
+
+To run the program, first install the required dependencies:
+
+```bash
+pip3 install numpy
+
+Next, access the UCR time-series dataset archive at https://www.cs.ucr.edu/~eamonn/time_series_data/ and follow the instructions provided on the site to download the dataset.
+
+For any dataset you choose to train or test on, make sure the corresponding files retain their original .txt filenames. You must also update the configuration at the top of the training and testing scripts to match the selected dataset, including the training and testing filenames, number of classes, and input length. These dataset-specific values can be found through the UCR archive linked above.
+
+
 
 How to acess files
 
