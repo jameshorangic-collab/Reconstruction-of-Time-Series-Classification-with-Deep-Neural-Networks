@@ -16,7 +16,7 @@ The choice to reconstruct the MLP rather than the FCN was motivated by its found
 To run the program, first install the required dependencies:
 
 ```bash
-pip3 install numpy
+pip3 install numpy'''
 
 Next, access the UCR time-series dataset archive at https://www.cs.ucr.edu/~eamonn/time_series_data/ and follow the instructions provided on the site to download the dataset.
 
