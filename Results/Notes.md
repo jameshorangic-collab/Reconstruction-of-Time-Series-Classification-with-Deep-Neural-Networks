@@ -71,8 +71,6 @@ For the softmax-cross-entropy combination, the initial gradient used for backpro
 
 `prediction - targetBatch`
 
-### Backpropagation
-
 ## Adadelta Optimizer
 
 The reconstruction includes a from-scratch implementation of Adadelta. Each weight matrix and bias vector has its own optimizer instance and therefore its own running state.
@@ -90,25 +88,7 @@ The training scripts use the learning-rate sequence:
 
 `1.0 -> 0.5 -> 0.25 -> 0.125 -> 0.1`
 
-The scheduler monitors training loss with a patience of 200 epochs. An epoch counts as a scheduler improvement only when the loss improves by more than `1e-4`. Once patience is exhausted, the next learning rate in the sequence is applied. The minimum learning rate is `0.1`.
-
-## Model Checkpointing
-
-Checkpointing and learning-rate scheduling use separate best-loss variables. A checkpoint is saved whenever the current training loss is strictly lower than the previous checkpoint loss, even if the improvement is smaller than `1e-4`.
-
-The saved `.npz` checkpoint contains the weights and biases for all four linear layers. This preserves the model state corresponding to the minimum observed training loss.
-
-## Training Configuration
-
-The reconstruction trains for 5000 epochs with a mini-batch size of 16. The faithful training script includes the four dropout operations described above. `Train_Without_Dropout.py` is a controlled ablation that removes dropout while leaving the remaining training procedure unchanged.
-
-The no-dropout model is not the faithful architecture; it is used to test how sensitive the observed behavior is to dropout regularization.
-
-## Evaluation
-
-`Test.py` recreates the dense/ReLU network, loads the saved checkpoint parameters, and normalizes the test data using statistics from the training set. Dropout is omitted during testing, as required by the inverted-dropout implementation.
-
-For each test sample, the predicted class is the index of the largest softmax probability. This is compared with the one-hot encoded true class, and final accuracy is calculated as the number of correct predictions divided by the total number of test samples.
+The scheduler monitors training loss with a patience of 200 epochs. An epoch counts as a scheduler improvement only when the loss improves by more than `1e-4`. The learning rate will decrease in the provided order as patience is surpassed.
 
 ## Additional SGD Implementation
 
