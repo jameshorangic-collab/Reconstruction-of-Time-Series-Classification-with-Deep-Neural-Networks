@@ -23,9 +23,12 @@ Next, access the UCR time-series dataset archive at https://www.cs.ucr.edu/~eamo
 
 For any dataset you choose to train or test on, make sure the corresponding files retain their original .txt filenames. You must also update the configuration at the top of the training and testing scripts to match the selected dataset, including the training and testing filenames, number of classes, and input length. These dataset-specific values can be found through the UCR archive linked above.
 
-In respect to my use of this project I was able to discover an error in the original papers recording, as the authors possed the accuracy of the Adiac set to be 0.752 for the MLP framework. This though appears to be difficult to replicate as in my own exact faithful recreatoin the results differed by almost half. Similarly, another faithful reconstruion of this exact project found the same error, which correlates with my own finding. I could be wrong idk. https://github.com/hfawaz/dl-4-tsc of the faithful guy idk there is some fishy buisness.
+This project took an unexpected turn when I began testing the first dataset, Adiac, and found that my result was substantially lower than the accuracy reported in the original paper (75.2%). After multiple iterations and inspections of my implementation, I was unable to identify a coding error that explained the discrepancy. This led me to investigate whether the difference could instead be caused by another reproducibility issue, such as historical framework differences or a misinterpretation of an implementation detail.
 
-Intepration with my data and supporting faitfhul reoncsutrion
+During this investigation, I found a later independent implementation by Fawaz et al., which evaluated several deep-learning architectures across the UCR/UEA time-series archive. Their MLP achieved an average accuracy of 39.7% on Adiac, which was much closer to my faithful reconstruction than to the 75.2% reported by Wang et al.
 
-What I learned and future amibitions
+To determine whether my implementation was generally flawed or whether Adiac was an unusual case, I also tested additional datasets. On CricketY, my reconstruction achieved 59.231%, compared with 60.0% in the Fawaz implementation and 59.5% in Wang et al., providing a strong reproduction of the expected result. FacesUCR was also reasonably close, although not identical. Together, these results suggest that the large discrepancy is concentrated around Adiac rather than reflecting a general failure of the reconstruction.
 
+For this reason, I interpret Adiac as a reproducibility gap rather than evidence of a specific mistake in either implementation. Possible explanations include differences in historical Keras/TensorFlow behavior, random-number generation, numerical precision, optimizer behavior, or other undocumented implementation details.
+
+##Conclusion + What I learned
