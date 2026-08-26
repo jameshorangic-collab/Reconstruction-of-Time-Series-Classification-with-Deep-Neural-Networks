@@ -8,11 +8,11 @@ The MLP follows this sequence:
 
 `Input -> Dropout(0.1) -> Linear(500) -> ReLU -> Dropout(0.2) -> Linear(500) -> ReLU -> Dropout(0.2) -> Linear(500) -> ReLU -> Dropout(0.3) -> Linear(numberOfClasses) -> Softmax`
 
-For Adiac, the example configuration uses an input length of 176 and 37 output classes. The no-dropout version preserves this architecture while removing all four dropout operations from the forward pass and backpropigation.
+For Adiac, the example configuration uses an input length of 176 and 37 output classes. The no-dropout version preserves this architecture while removing all four dropout operations from the forward pass and backpropagation.
 
 ## Random Seed and Reproducibility
 
-Two random sources are controlled at the beginning of training. Python's `random.seed(seed)` and NumPy's `setSeed(seed)` operatre as seperate controlls for variation, and allow for exact replicatoin of the results found in this paper.
+Two random sources are controlled at the beginning of training. Python's `random.seed(seed)` controls the training-sample shuffle, while the custom `setSeed(seed)` function resets the shared NumPy random-number generator used for layer initialization and dropout. Together, these controls provide deterministic reproducibility within this reconstruction when the same seed and configuration are used. They do not imply identical random-number trajectories to historical Keras/TensorFlow implementations.
 
 ## Data Preprocessing and Normalization
 
@@ -24,7 +24,7 @@ The test set is normalized using the same mean and standard deviation calculated
 
 ## Mini-Batching and Shuffling
 
-Training samples are shuffled before every epoch. The shuffled samples are divided into mini-batches of 16, and are run together through both forward pass and back propigation.
+Training samples are shuffled before every epoch. The shuffled samples are divided into mini-batches of 16 and are run together through both the forward pass and backpropagation. Both training scripts run for 5000 epochs.
 
 ## Linear Layer
 
@@ -88,7 +88,11 @@ The training scripts use the learning-rate sequence:
 
 `1.0 -> 0.5 -> 0.25 -> 0.125 -> 0.1`
 
-The scheduler monitors training loss with a patience of 200 epochs. An epoch counts as a scheduler improvement only when the loss improves by more than `1e-4`. The learning rate will decrease in the provided order as patience is surpassed.
+The scheduler monitors training loss with a patience of 200 epochs. An epoch counts as a scheduler improvement only when the loss improves by more than `1e-4`. The learning rate decreases in the provided order when the patience threshold is reached.
+
+## Model Checkpointing
+
+Model checkpointing monitors training loss independently from the learning-rate scheduler. A checkpoint is saved whenever the current epoch loss is strictly smaller than `bestCheckpointLoss`. Unlike the scheduler, checkpointing does not require an improvement greater than `1e-4`. As a result, the saved weights correspond to the lowest training loss observed during the run, while `schedulerBestLoss` separately controls learning-rate reduction.
 
 ## Additional SGD Implementation
 
