@@ -106,3 +106,4 @@ with open(normalizedTestFile, "r", encoding="utf-8") as file:
         total += 1
 
 accuracyFinal = float(correct) / total
+print("Accuracy:", accuracyFinal)
