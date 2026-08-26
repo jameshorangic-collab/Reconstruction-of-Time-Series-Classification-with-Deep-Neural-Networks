@@ -31,4 +31,4 @@ To determine whether my implementation was generally flawed or whether Adiac was
 
 For this reason, I interpret Adiac as a reproducibility gap rather than evidence of a specific mistake in either implementation. Possible explanations include differences in historical Keras/TensorFlow behavior, random-number generation, numerical precision, optimizer behavior, or other undocumented implementation details.
 
-##Conclusion + What I learned
+Overall, this project provided me with a deeper understanding of how a neural network operates from both a mathematical and programmatic perspective.
