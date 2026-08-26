@@ -23,11 +23,7 @@ Next, access the UCR time-series dataset archive at https://www.cs.ucr.edu/~eamo
 
 For any dataset you choose to train or test on, make sure the corresponding files retain their original .txt filenames. You must also update the configuration at the top of the training and testing scripts to match the selected dataset, including the training and testing filenames, number of classes, and input length. These dataset-specific values can be found through the UCR archive linked above.
 
-
-
-How to acess files
-
-What I found about Adiac
+In respect to my use of this project I was able to discover an error in the original papers recording, as the authors possed the accuracy of the Adiac set to be 0.752 for the MLP framework. This though appears to be difficult to replicate as in my own exact faithful recreatoin the results differed by almost half. Similarly, another faithful reconstruion of this exact project found the same error, which correlates with my own finding. I could be wrong idk. https://github.com/hfawaz/dl-4-tsc of the faithful guy idk there is some fishy buisness.
 
 Intepration with my data and supporting faitfhul reoncsutrion
 
