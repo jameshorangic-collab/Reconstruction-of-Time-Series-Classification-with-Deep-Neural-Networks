@@ -9,7 +9,7 @@ The purpose of this project was to develop a deeper understanding of how neural 
 
 The paper itself argues for the use of deep neural networks for time-series classification, with particular emphasis on convolutional neural networks (CNNs), such as the fully convolutional network (FCN). Its importance comes from showcasing that simple end-to-end neural networks could achieve strong performance on the time-series benchmarks of the time without requiring extensive engineering or specialized model design. In particular, the FCN and related architectures demonstrated that convolutional networks could learn useful representations directly from raw time-series data. The work helped establish deep learning as a serious approach to time-series classification and influenced much of the research that followed.
 
-The choice to reconstruct the MLP rather than the FCN was motivated by its foundational role in neural networks and its direct connection to many concepts still used throughout modern machine learning. My reconstruction used the NumPy library to implement the operations, optimizer, and data preprocessing prescribed by the original implementation. For further details on the reconstruction methodology, see [`Results/Notes.md`](./Results/Notes.md).
+The choice to reconstruct the MLP rather than the FCN was motivated by its foundational role in neural networks and its direct connection to many concepts still used throughout modern machine learning. My reconstruction used the NumPy library to implement the operations, optimizer, and data preprocessing prescribed by the original implementation. For further details on the reconstruction methodology, see [`Docs/Methodology.md`](./Docs/Methodology.md).
 
 ## How to Run the Reconstruction
 
@@ -21,7 +21,7 @@ pip3 install numpy
 
 Next, access the UCR time-series dataset archive at https://www.cs.ucr.edu/~eamonn/time_series_data/ and follow the instructions provided on the site to download the dataset.
 
-For any dataset you choose to train or test on, make sure the corresponding files retain their original .txt filenames. You must also update the configuration at the top of the training and testing scripts to match the selected dataset, including the training and testing filenames, number of classes, and input length. These dataset-specific values can be found through the UCR archive linked above.
+For any dataset you choose to train or test on, make sure the corresponding files retain their original .txt filenames. You must also update the configuration at the top of the training and testing scripts to match the selected dataset, including the training and testing filenames, number of classes, and input length. These dataset-specific values can be found through the UCR archive linked above. The current label encoding assumes that class labels are contiguous, one-indexed integers from `1` through `numberOfClasses`; datasets that use a different labeling scheme should have their labels remapped before training or testing.
 
 This project took an unexpected turn when I began testing the first dataset, Adiac, and found that my result was substantially lower than the accuracy reported in the original paper (75.2%). After multiple iterations and inspections of my implementation, I was unable to identify a coding error that explained the discrepancy. This led me to investigate whether the difference could instead be caused by another reproducibility issue, such as historical framework differences or a misinterpretation of an implementation detail.
 
