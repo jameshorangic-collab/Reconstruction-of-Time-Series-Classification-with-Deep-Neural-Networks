@@ -4,15 +4,15 @@ This file documents the components implemented for the from-scratch NumPy recons
 
 ## Network Architecture
 
-The faithful MLP follows this sequence:
+The MLP follows this sequence:
 
 `Input -> Dropout(0.1) -> Linear(500) -> ReLU -> Dropout(0.2) -> Linear(500) -> ReLU -> Dropout(0.2) -> Linear(500) -> ReLU -> Dropout(0.3) -> Linear(numberOfClasses) -> Softmax`
 
-For Adiac, the example configuration uses an input length of 176 and 37 output classes. The no-dropout ablation preserves the same dense architecture while removing all four dropout operations.
+For Adiac, the example configuration uses an input length of 176 and 37 output classes. The no-dropout version preserves this architecture while removing all four dropout operations from the forward pass and backpropigation.
 
 ## Random Seed and Reproducibility
 
-Two random sources are controlled at the beginning of training. Python's `random.seed(seed)` controls the order produced by `random.shuffle`, while `setSeed(seed)` resets the shared NumPy random-number generator used by the custom layers. This shared generator controls both Glorot weight initialization and dropout masks.
+Two random sources are controlled at the beginning of training. Python's `random.seed(seed)` and NumPy's `setSeed(seed)` operatre as seperate controlls for variation, and allow for exact replicatoin of the results found in this paper.
 
 ## Data Preprocessing and Normalization
 
@@ -22,11 +22,9 @@ The first value of each row is treated as the class label and the remaining valu
 
 The test set is normalized using the same mean and standard deviation calculated from the training set. Test-set statistics are not used for normalization.
 
-This reconstruction does **not** implement a Batch Normalization (BatchNorm) layer. The normalization above is input-data preprocessing, separate from the neural-network layers.
-
 ## Mini-Batching and Shuffling
 
-Training samples are shuffled before every epoch using Python's `random.shuffle`. The shuffled samples are divided into mini-batches of 16. Inputs are arranged in `features x batch` form, and class labels are converted into one-hot target vectors.
+Training samples are shuffled before every epoch. The shuffled samples are divided into mini-batches of 16, and are run together through both forward pass and back propigation.
 
 ## Linear Layer
 
@@ -38,15 +36,11 @@ Weights are initialized with Glorot/Xavier uniform initialization using the limi
 
 `sqrt(6 / (inputSize + outputSize))`
 
-Biases begin at zero. During backpropagation, the layer calculates the average weight gradient and mean bias gradient across the mini-batch, then returns the gradient with respect to the previous layer.
+Biases begin at zero.
 
 ## ReLU Activation
 
-The custom ReLU activation performs:
-
 `max(0, x)`
-
-During backpropagation, incoming gradients are passed through locations where the stored input was greater than zero and are set to zero elsewhere.
 
 ## Dropout
 
@@ -59,11 +53,11 @@ The dropout rates are:
 - After second hidden ReLU: `0.2`
 - After third hidden ReLU: `0.3`
 
-The same mask and scaling are applied to the gradient during the corresponding backward pass. Because inverted dropout performs its scaling during training, dropout is not applied during evaluation.
+The same mask and scaling are applied to the gradient during the corresponding backward pass. Dropout is not applied during evaluation.
 
 ## Softmax
 
-The custom `Softmax` converts the output logits into class probabilities. Before exponentiation, the maximum logit in each sample is subtracted for numerical stability. The exponentials are then divided by their column-wise sum.
+The `Softmax` function converts the output logits into class probabilities. Before exponentiation, the maximum logit in each sample is subtracted for numerical stability.
 
 ## Cross-Entropy Loss
 
@@ -77,9 +71,7 @@ For the softmax-cross-entropy combination, the initial gradient used for backpro
 
 `prediction - targetBatch`
 
-## Backpropagation
-
-Gradients are propagated through the network in the reverse order of the forward pass. Each layer stores the information it needs during its forward operation, then uses that stored state in its backward operation. In the faithful model, gradients also pass through each matching dropout mask in reverse order.
+### Backpropagation
 
 ## Adadelta Optimizer
 
