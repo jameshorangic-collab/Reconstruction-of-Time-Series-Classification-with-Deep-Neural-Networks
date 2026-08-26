@@ -21,14 +21,41 @@ pip3 install numpy
 
 Next, access the UCR time-series dataset archive at https://www.cs.ucr.edu/~eamonn/time_series_data/ and follow the instructions provided on the site to download the dataset.
 
-For any dataset you choose to train or test on, make sure the corresponding files retain their original .txt filenames. You must also update the configuration at the top of the training and testing scripts to match the selected dataset, including the training and testing filenames, number of classes, and input length. These dataset-specific values can be found through the UCR archive linked above. The current label encoding assumes that class labels are contiguous, one-indexed integers from `1` through `numberOfClasses`; datasets that use a different labeling scheme should have their labels remapped before training or testing.
+The scripts read the files specified by `trainFile` and `testFile`. The included Adiac example uses `Adiac_TRAIN.txt` and `Adiac_TEST.txt`. Place the selected dataset files in the project directory or update these variables to point to their actual locations. You must also update the number of classes and input length to match the selected dataset. The current label encoding assumes that class labels are contiguous, one-indexed integers from `1` through `numberOfClasses`; datasets that use a different labeling scheme should have their labels remapped before training or testing.
+
+To run the faithful reconstruction with dropout:
+
+```bash
+python3 Train_With_Dropout.py
+```
+
+To run the controlled no-dropout ablation instead:
+
+```bash
+python3 Train_Without_Dropout.py
+```
+
+After training, make sure `weightsFile` in `Test.py` matches the weights file produced by the training script you used, then evaluate the model with:
+
+```bash
+python3 Test.py
+```
 
 This project took an unexpected turn when I began testing the first dataset, Adiac, and found that my result was substantially lower than the accuracy reported in the original paper (75.2%). After multiple iterations and inspections of my implementation, I was unable to identify a coding error that explained the discrepancy. This led me to investigate whether the difference could instead be caused by another reproducibility issue, such as historical framework differences or a misinterpretation of an implementation detail.
 
 During this investigation, I found a later independent implementation by Fawaz et al., which evaluated several deep-learning architectures across the UCR/UEA time-series archive. Their MLP achieved an average accuracy of 39.7% on Adiac, which was much closer to my faithful reconstruction than to the 75.2% reported by Wang et al.
 
+As a controlled ablation, I also trained the Adiac model without dropout. This increased the mean test accuracy from 36.343% in the faithful reconstruction to 68.363%, substantially closer to the original reported result. This suggests that dropout or related training-configuration differences could have contributed to the discrepancy, although the no-dropout model is not the faithful architecture and does not establish the cause by itself.
+
 To determine whether my implementation was generally flawed or whether Adiac was an unusual case, I also tested additional datasets. On CricketY, my reconstruction achieved 59.231%, compared with 60.0% in the Fawaz implementation and 59.5% in Wang et al., providing a strong reproduction of the expected result. FacesUCR was also reasonably close, although not identical. Together, these results suggest that the large discrepancy is concentrated around Adiac rather than reflecting a general failure of the reconstruction.
 
-For this reason, I interpret Adiac as a reproducibility gap rather than evidence of a specific mistake in either implementation. Possible explanations include differences in historical Keras/TensorFlow behavior, random-number generation, numerical precision, optimizer behavior, or other undocumented implementation details.
+For this reason, I interpret Adiac as a reproducibility gap rather than evidence of a specific mistake in either implementation. Possible explanations include differences in historical Keras/TensorFlow behavior, random-number generation, numerical precision, optimizer behavior, or other undocumented implementation details. Full multi-seed results are available in [`Docs/Results.md`](./Docs/Results.md).
 
 Overall, this project provided me with a deeper understanding of how a neural network operates from both a mathematical and programmatic perspective.
+
+## References
+
+- Wang et al., *Time Series Classification from Scratch with Deep Neural Networks: A Strong Baseline*: https://arxiv.org/abs/1611.06455
+- Original Wang et al. implementation: https://github.com/cauchyturing/UCR_Time_Series_Classification_Deep_Learning_Baseline
+- Fawaz et al. time-series classification implementation: https://github.com/hfawaz/dl-4-tsc
+- UCR Time Series Classification Archive: https://www.cs.ucr.edu/~eamonn/time_series_data/
