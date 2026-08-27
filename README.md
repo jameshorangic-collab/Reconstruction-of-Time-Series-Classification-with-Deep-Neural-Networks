@@ -3,7 +3,7 @@
 This project is a reconstruction of the Multi-Layer Perceptron (MLP) architecture used in the 2016 paper *Time Series Classification from Scratch with Deep Neural Networks: A Strong Baseline*. The paper compares the performance of this MLP with several other time-series classification methods using the UCR 2015 archive as its primary benchmark. The model itself is a fully connected neural network with three hidden layers, ReLU activations, dropout regularization, a softmax classifier, and the Adadelta optimizer.
 
 ![MLP architecture used in the reconstruction](./Images/mlp_architecture.png)
-*MLP architecture from Wang et al. (2016).*
+*MLP architecture recreated based on Wang et al. (2016).*
 
 The purpose of this project was to develop a deeper understanding of how neural networks function, from the forward pass through backpropagation. I chose to reconstruct this particular paper because it implements a relatively simple neural network framework built from components that are fundamental across modern machine learning. By implementing these operations from scratch, I hoped to better understand the mechanisms that underlie systems now used across many different fields. Although the model itself is simple compared with many of today's architectures, reconstructing it represents an important step toward developing a stronger foundation for more advanced work in machine learning.
 
