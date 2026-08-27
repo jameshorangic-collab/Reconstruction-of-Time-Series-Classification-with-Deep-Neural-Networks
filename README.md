@@ -1,4 +1,4 @@
-# Reconstruction-of-Time-Series-Classification-with-Deep-Neural-NetworksPrivate
+# Reconstruction of Time Series Classification with Deep Neural Networks
 
 This project is a reconstruction of the Multi-Layer Perceptron (MLP) architecture used in the 2016 paper *Time Series Classification from Scratch with Deep Neural Networks: A Strong Baseline*. The paper compares the performance of this MLP with several other time-series classification methods using the UCR 2015 archive as its primary benchmark. The model itself is a fully connected neural network with three hidden layers, ReLU activations, dropout regularization, a softmax classifier, and the Adadelta optimizer.
 
